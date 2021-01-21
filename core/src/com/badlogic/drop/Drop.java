@@ -9,6 +9,7 @@ public class Drop extends Game {
 
 	public SpriteBatch batch;
 	public BitmapFont font;
+	private GameScreen gameScreen;
 
 	public void create() {
 		batch = new SpriteBatch();
@@ -21,9 +22,18 @@ public class Drop extends Game {
 		super.render(); //important!
 	}
 
+	public void setGameScreen(GameScreen gs)
+	{
+		this.gameScreen = gs;
+	}
+
 	public void dispose() {
 		batch.dispose();
 		font.dispose();
+		if (gameScreen != null)
+		{
+			gameScreen.dispose();
+		}
 	}
 
 }
