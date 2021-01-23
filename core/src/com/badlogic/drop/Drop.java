@@ -10,6 +10,7 @@ public class Drop extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
 	private GameScreen gameScreen;
+	private GameOverMenu gameOverMenu;
 
 	public void create() {
 		batch = new SpriteBatch();
@@ -27,12 +28,21 @@ public class Drop extends Game {
 		this.gameScreen = gs;
 	}
 
+	public void setGameOverMenu(GameOverMenu gom)
+	{
+		this.gameOverMenu = gom;
+	}
+
 	public void dispose() {
 		batch.dispose();
 		font.dispose();
 		if (gameScreen != null)
 		{
 			gameScreen.dispose();
+		}
+		if (gameOverMenu != null)
+		{
+			gameOverMenu.dispose();
 		}
 	}
 

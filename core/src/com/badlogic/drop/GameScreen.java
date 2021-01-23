@@ -21,7 +21,9 @@ public class GameScreen implements Screen {
 
     Texture dropImage;
     Texture bucketImage;
+    Texture jungleImage;
     Sound dropSound;
+    Sound failSound;
     Music rainMusic;
     OrthographicCamera camera;
     Rectangle bucket;
@@ -34,11 +36,13 @@ public class GameScreen implements Screen {
         game.setGameScreen(this);
 
         // load the images for the droplet and the bucket, 64x64 pixels each
+        jungleImage = new Texture(Gdx.files.internal("jungle.png"));
         dropImage = new Texture(Gdx.files.internal("drop.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        failSound = Gdx.audio.newSound(Gdx.files.internal("fail.wav"));
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         rainMusic.setLooping(true);
 
@@ -89,6 +93,7 @@ public class GameScreen implements Screen {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
+        game.batch.draw(jungleImage, 0 , 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
         game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
         for (Rectangle raindrop : raindrops) {
@@ -125,8 +130,13 @@ public class GameScreen implements Screen {
         while (iter.hasNext()) {
             Rectangle raindrop = iter.next();
             raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
+            if (raindrop.y + 64 < 0){
                 iter.remove();
+                failSound.play();
+                game.setScreen(new GameOverMenu(game, dropsGathered));
+                dispose();
+            }
+
             if (raindrop.overlaps(bucket)) {
                 dropsGathered++;
                 dropSound.play();
